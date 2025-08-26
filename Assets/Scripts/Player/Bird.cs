@@ -23,13 +23,11 @@ public class Bird : MonoBehaviour
 
     private void OnEnable()
     {
-        _playerInput.Enable();
         _collisionDetector.Detected += OnCollisionDetected;
     }
 
     private void OnDisable()
     {
-        _playerInput.Disable();
         _collisionDetector.Detected += OnCollisionDetected;
     }
 
@@ -49,10 +47,12 @@ public class Bird : MonoBehaviour
     public void Reset()
     {
         _mover.Reset();
+        _playerInput.Enable();
     }
 
     private void OnCollisionDetected()
     {
         GameOver?.Invoke();
+        _playerInput.Disable();
     }
 }

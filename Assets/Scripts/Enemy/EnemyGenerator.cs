@@ -16,7 +16,7 @@ namespace Assets.Scripts
         {
             _enemyPool = new ObjectPool<Enemy>
                 (
-                createFunc: () => OnCreate(),
+                createFunc: () => Instantiate(_enemyPrefab),
                 actionOnGet: (enemy) => SpawnEnemyRandomPosition(enemy),
                 actionOnRelease: (enemy) => OnRelease(enemy)
                 );
@@ -42,11 +42,6 @@ namespace Assets.Scripts
             enemy.gameObject.SetActive(false);
         }
 
-        private void GetEnemy()
-        {
-            Enemy enemy = _enemyPool.Get();
-        }
-
         private void SpawnEnemyRandomPosition(Enemy enemy)
         {
             enemy.transform.position = new Vector2
@@ -54,11 +49,6 @@ namespace Assets.Scripts
                 _spawnZone.transform.position.x,
                 Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
                 );
-        }
-
-        private Enemy OnCreate()
-        {
-            return Instantiate(_enemyPrefab);
         }
     }
 }

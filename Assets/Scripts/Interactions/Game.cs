@@ -25,6 +25,7 @@ namespace Assets.Scripts
         private void Start()
         {
             Time.timeScale = 0;
+            _endGameScreen.Close();
             _startScreen.Open();
         }
 
