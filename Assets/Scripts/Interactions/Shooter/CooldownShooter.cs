@@ -12,6 +12,11 @@ namespace Assets.Scripts
         private Coroutine _cooldownShootCoroutine;
         private WaitForSeconds _cooldown;
 
+        private void Awake()
+        {
+            _shooter = GetComponent<Shooter>();
+        }
+
         public void TryStartShoot()
         {
             if (_cooldownShootCoroutine != null)
@@ -27,6 +32,7 @@ namespace Assets.Scripts
 
             StopCoroutine(_cooldownShootCoroutine);
             _cooldownShootCoroutine = null;
+            _shooter.Reset();
         }
 
         private IEnumerator CooldownShoot()
@@ -35,9 +41,9 @@ namespace Assets.Scripts
 
             while (enabled)
             {
-                _shooter.Shoot();
-
                 yield return _cooldown;
+
+                _shooter.Shoot();
             }
         }
     }

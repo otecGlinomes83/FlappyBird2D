@@ -1,15 +1,23 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BirdTracker : MonoBehaviour
+namespace Assets.Scripts.Player
 {
-    [SerializeField] private Bird _bird;
-    [SerializeField] private float _xOffset;
-
-    private void Update()
+    public class BirdTracker : MonoBehaviour
     {
-        Vector3 position = transform.position;
-        position.x = _bird.transform.position.x + _xOffset;
+        [SerializeField] private Transform _target;
+        [SerializeField] private float _offsetX;
 
-        transform.position = position;
+        private void Update()
+        {
+            Vector3 position = transform.position;
+            position.x = _target.transform.position.x + _offsetX;
+
+            transform.position = position;
+        }
+
+        public void SetTarget(Transform target)
+        {
+            _target = target;
+        }
     }
 }

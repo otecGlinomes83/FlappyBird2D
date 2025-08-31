@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Detectors;
+using Assets.Scripts.Interfaces;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Assets.Scripts
 {
     [RequireComponent(typeof(HealthDetector))]
-    public class Bullet : MonoBehaviour
+    public class Bullet : MonoBehaviour, ReleaseAble<Bullet>
     {
         [SerializeField] private float _damage;
         [SerializeField] private float _speed;
@@ -20,6 +21,8 @@ namespace Assets.Scripts
 
         private bool _isActive;
 
+        public GameObject GameObject => gameObject;
+
         private void Awake()
         {
             _detector = GetComponent<HealthDetector>();
@@ -27,12 +30,12 @@ namespace Assets.Scripts
 
         private void OnEnable()
         {
-            _detector.HealthDetected += OnHealthDetected;
+            _detector.HealthDetected += Attack;
         }
 
         private void OnDisable()
         {
-            _detector.HealthDetected -= OnHealthDetected;
+            _detector.HealthDetected -= Attack;
         }
 
         public void Initialize(Vector2 direction, Quaternion rotation)
@@ -43,7 +46,8 @@ namespace Assets.Scripts
 
             StartCoroutine(Move());
         }
-        private void OnHealthDetected(Health health)
+
+        private void Attack(Health health)
         {
             health.TakeDamage(_damage);
             StopAllCoroutines();

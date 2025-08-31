@@ -12,12 +12,11 @@ namespace Assets.Scripts.Detectors
         private void Awake()
         {
             _detectZone = GetComponent<BoxCollider2D>();
-            _detectZone.isTrigger = true;
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.TryGetComponent(out Health health))
+            if (collision.gameObject.TryGetComponent(out Health health))
             {
                 HealthDetected?.Invoke(health);
             }
