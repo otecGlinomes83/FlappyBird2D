@@ -21,10 +21,13 @@ namespace Assets.Scripts
         {
             _currentHealth = Mathf.Max(_currentHealth - Mathf.Max(damage, 0f), 0f);
 
-            Debug.Log($"{gameObject.name} - получен урон!");
-
             if (_currentHealth <= 0)
                 Dead?.Invoke();
+        }
+
+        public void Reset()
+        {
+            _currentHealth = _maxHealth;
         }
     }
 }

@@ -229,6 +229,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a249530d341ef0f47a5b21579b097dd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxSpawns: 10
+  _prefab: {fileID: 3262859826233579518, guid: 66304591a4008534da245368377e6abd, type: 3}
   _bulletPrefab: {fileID: 3262859826233579518, guid: 66304591a4008534da245368377e6abd, type: 3}
   _spawnPosition: {fileID: 3307393554707090780}
 --- !u!114 &2675435396691397657

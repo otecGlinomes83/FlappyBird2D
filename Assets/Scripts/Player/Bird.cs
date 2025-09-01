@@ -16,6 +16,8 @@ public class Bird : MonoBehaviour
     private Mover _mover;
     private Shooter _shooter;
 
+    private bool _isDead = false;
+
     private void Awake()
     {
         _mover = GetComponent<Mover>();
@@ -27,13 +29,13 @@ public class Bird : MonoBehaviour
     private void OnEnable()
     {
         _health.Dead += Dead;
-        _collisionDetector.Detected += Dead;
+        _collisionDetector.Detected += HandleCollision;
     }
 
     private void OnDisable()
     {
         _health.Dead -= Dead;
-        _collisionDetector.Detected += Dead;
+        _collisionDetector.Detected -= HandleCollision;
     }
 
     private void Update()
@@ -53,11 +55,24 @@ public class Bird : MonoBehaviour
     {
         _mover.Reset();
         _shooter.Reset();
+        _health.Reset();
+
         _playerInput.Enable();
+
+        _isDead = false;
+    }
+
+    private void HandleCollision(Collision2D collision)
+    {
+        Dead();
     }
 
     private void Dead()
     {
+        if (_isDead)
+            return;
+
+        _isDead = true;
         GameOver?.Invoke();
         _playerInput.Disable();
     }

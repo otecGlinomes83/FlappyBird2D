@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
     public class CollisionDetector : MonoBehaviour
     {
-        public event Action Detected;
+        public event Action<Collision2D> Detected;
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            Detected?.Invoke();
+            Detected?.Invoke(collision);
         }
     }
 }

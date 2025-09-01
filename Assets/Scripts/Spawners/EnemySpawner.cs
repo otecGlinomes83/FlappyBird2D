@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Scripts.Spawners;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Enemy
 {
-    public class EnemySpawner : MonoBehaviour
+    public class EnemySpawner : GenericSpawner<Enemy>
     {
         [SerializeField] private float _spawnRate;
 
@@ -18,29 +17,16 @@ namespace Assets.Scripts
 
         private Coroutine _spawnCoroutine;
 
-        private ObjectPool<Enemy> _enemyPool;
-        private List<Enemy> _enemies = new List<Enemy>();
-
-        private void Awake()
-        {
-            _enemyPool = new ObjectPool<Enemy>
-                (
-                createFunc: () => CreateEnemy(),
-                actionOnGet: (enemy) => SpawnEnemyRandomPosition(enemy),
-                actionOnRelease: (enemy) => OnRelease(enemy)
-                );
-        }
-
         private void OnEnable()
         {
             _game.Started += StartSpawn;
-            _game.Finished += StopSpawn;
+            _game.Finished += Reset;
         }
 
         private void OnDisable()
         {
             _game.Started -= StartSpawn;
-            _game.Finished -= StopSpawn;
+            _game.Finished -= Reset;
         }
 
         private void StartSpawn()
@@ -48,39 +34,17 @@ namespace Assets.Scripts
             _spawnCoroutine = StartCoroutine(CooldownSpawn());
         }
 
-        private void StopSpawn()
+        public override void Reset()
         {
+            base.Reset();
             StopCoroutine(_spawnCoroutine);
-            DestroyAll();
-
-            _enemyPool.Clear();
-            _enemies.Clear();
         }
 
-        private void DestroyAll()
+        protected override void OnGet(Enemy enemy)
         {
-            foreach (Enemy enemy in _enemies)
-                Destroy(enemy.gameObject);
-        }
+            base.OnGet(enemy);
 
-        private Enemy CreateEnemy()
-        {
-            Enemy enemy = Instantiate(_enemyPrefab);
-            _enemies.Add(enemy);
-
-            return enemy;
-        }
-
-        private void OnRelease(Enemy enemy)
-        {
-            enemy.gameObject.SetActive(false);
-            enemy.ReadyForRelease -= _enemyPool.Release;
-        }
-
-        private void SpawnEnemyRandomPosition(Enemy enemy)
-        {
-            enemy.gameObject.SetActive(true);
-            enemy.ReadyForRelease += _enemyPool.Release;
+            enemy.ReadyForRelease += _pool.Release;
 
             enemy.transform.position = new Vector2
                 (
@@ -91,6 +55,13 @@ namespace Assets.Scripts
             enemy.Initialize(_bird.transform);
         }
 
+        protected override void OnRelease(Enemy enemy)
+        {
+            base.OnRelease(enemy);
+
+            enemy.ReadyForRelease -= _pool.Release;
+        }
+
         IEnumerator CooldownSpawn()
         {
             WaitForSeconds cooldown = new WaitForSeconds(_spawnRate);
@@ -99,8 +70,8 @@ namespace Assets.Scripts
             {
                 yield return cooldown;
 
-                if (_enemyPool.CountActive < _maxEnemyCount)
-                    _enemyPool.Get();
+                if (_pool.CountActive < _maxEnemyCount)
+                    _pool.Get();
             }
         }
     }

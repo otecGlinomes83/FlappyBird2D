@@ -1,13 +1,11 @@
-﻿using Assets.Scripts.Detectors;
-using Assets.Scripts.Interfaces;
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
-    [RequireComponent(typeof(HealthDetector))]
-    public class Bullet : MonoBehaviour, ReleaseAble<Bullet>
+    [RequireComponent(typeof(CollisionDetector))]
+    public class Bullet : MonoBehaviour
     {
         [SerializeField] private float _damage;
         [SerializeField] private float _speed;
@@ -15,7 +13,7 @@ namespace Assets.Scripts
 
         public event Action<Bullet> ReadyForRelease;
 
-        private HealthDetector _detector;
+        private CollisionDetector _detector;
 
         private Vector2 _direction;
 
@@ -25,17 +23,17 @@ namespace Assets.Scripts
 
         private void Awake()
         {
-            _detector = GetComponent<HealthDetector>();
+            _detector = GetComponent<CollisionDetector>();
         }
 
         private void OnEnable()
         {
-            _detector.HealthDetected += Attack;
+            _detector.Detected += TryAttack;
         }
 
         private void OnDisable()
         {
-            _detector.HealthDetected -= Attack;
+            _detector.Detected -= TryAttack;
         }
 
         public void Initialize(Vector2 direction, Quaternion rotation)
@@ -47,9 +45,11 @@ namespace Assets.Scripts
             StartCoroutine(Move());
         }
 
-        private void Attack(Health health)
+        private void TryAttack(Collision2D collision)
         {
-            health.TakeDamage(_damage);
+            if (collision.gameObject.TryGetComponent(out Health health))
+                health.TakeDamage(_damage);
+
             StopAllCoroutines();
 
             ReadyForRelease?.Invoke(this);

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Enemy
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class EnemyDetector : MonoBehaviour

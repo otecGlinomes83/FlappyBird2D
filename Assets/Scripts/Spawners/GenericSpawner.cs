@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -9,7 +8,6 @@ namespace Assets.Scripts.Spawners
     {
         [SerializeField] protected int _maxSpawns;
 
-        [SerializeField] protected Game _game;
         [SerializeField] protected T _prefab;
 
         protected ObjectPool<T> _pool;
@@ -25,20 +23,7 @@ namespace Assets.Scripts.Spawners
                 );
         }
 
-        protected void OnEnable()
-        {
-
-        }
-
-        protected void OnDisable()
-        {
-            ClearAll();
-        }
-
-        protected T GetObject() =>
-            _pool.Get();
-
-        protected void ClearAll()
+        public virtual void Reset()
         {
             DestroyAll();
 
@@ -46,12 +31,12 @@ namespace Assets.Scripts.Spawners
             _objects.Clear();
         }
 
-        protected void OnGet(T obj)
+        protected virtual void OnGet(T obj)
         {
             obj.gameObject.SetActive(true);
         }
 
-        protected T OnCreate()
+        protected virtual T OnCreate()
         {
             T obj = Instantiate(_prefab);
             _objects.Add(obj);
@@ -59,13 +44,16 @@ namespace Assets.Scripts.Spawners
             return obj;
         }
 
-        protected void OnRelease(T obj)
+        protected virtual void OnRelease(T obj)
         {
             obj.gameObject.SetActive(false);
         }
 
-        protected void DestroyAll()
+        protected virtual void DestroyAll()
         {
+            if (_objects == null)
+                return;
+
             foreach (T obj in _objects)
                 Destroy(obj.gameObject);
         }
