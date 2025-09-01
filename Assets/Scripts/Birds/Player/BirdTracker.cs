@@ -14,10 +14,5 @@ namespace Assets.Scripts.Player
 
             transform.position = position;
         }
-
-        public void SetTarget(Transform target)
-        {
-            _target = target;
-        }
     }
 }

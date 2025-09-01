@@ -1,28 +1,27 @@
 using Assets.Scripts;
+using Assets.Scripts.Interfaces;
 using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
-[RequireComponent(typeof(Shooter))]
-[RequireComponent(typeof(Health))]
-public class Bird : MonoBehaviour
+[RequireComponent(typeof(PlayerHealth))]
+public class Player : MonoBehaviour, IShootAble, ResetAble
 {
     [SerializeField] private CollisionDetector _collisionDetector;
 
-    public event Action GameOver;
-
-    private Health _health;
+    private PlayerHealth _health;
     private PlayerInput _playerInput;
-    private Mover _mover;
-    private Shooter _shooter;
 
     private bool _isDead = false;
 
+    public event Action GameOver;
+    public event Action FlyTriggered;
+    public event Action ShootTriggered;
+    public event Action ResetCompleted;
+
     private void Awake()
     {
-        _mover = GetComponent<Mover>();
-        _shooter = GetComponent<Shooter>();
-        _health = GetComponent<Health>();
+        _health = GetComponent<PlayerHealth>();
         _playerInput = new PlayerInput();
     }
 
@@ -42,27 +41,25 @@ public class Bird : MonoBehaviour
     {
         if (_playerInput.Bird.Fly.triggered)
         {
-            _mover.Fly();
+            FlyTriggered?.Invoke();
         }
 
         if (_playerInput.Bird.Shoot.triggered)
         {
-            _shooter.Shoot();
+            ShootTriggered?.Invoke();
         }
     }
 
     public void Reset()
     {
-        _mover.Reset();
-        _shooter.Reset();
-        _health.Reset();
+        ResetCompleted?.Invoke();
 
         _playerInput.Enable();
 
         _isDead = false;
     }
 
-    private void HandleCollision(Collision2D collision)
+    private void HandleCollision(Collider2D collider)
     {
         Dead();
     }

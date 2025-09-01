@@ -10,6 +10,8 @@ public class Mover : MonoBehaviour
     [SerializeField] private float _maxRotationZ;
     [SerializeField] private float _minRotationZ;
 
+    [SerializeField] private Player _bird;
+
     private Rigidbody2D _rigidbody2D;
 
     private Quaternion _maxRotation;
@@ -28,13 +30,25 @@ public class Mover : MonoBehaviour
         Reset();
     }
 
+    private void OnEnable()
+    {
+        _bird.ResetCompleted += Reset;
+        _bird.FlyTriggered += Fly;
+    }
+
+    private void OnDisable()
+    {
+        _bird.ResetCompleted -= Reset;
+        _bird.FlyTriggered -= Fly;
+    }
+
     public void Fly()
     {
         _rigidbody2D.linearVelocity = new Vector2(_speed, _tapForce);
         transform.rotation = _maxRotation;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         transform.rotation = Quaternion.RotateTowards(transform.rotation, _minRotation, _rotationSpeed);
     }

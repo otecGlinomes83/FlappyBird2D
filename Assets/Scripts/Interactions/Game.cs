@@ -5,7 +5,7 @@ namespace Assets.Scripts
 {
     public class Game : MonoBehaviour
     {
-        [SerializeField] private Bird _bird;
+        [SerializeField] private global::Player _bird;
         [SerializeField] private StartScreen _startScreen;
         [SerializeField] private EndGameScreen _endGameScreen;
 

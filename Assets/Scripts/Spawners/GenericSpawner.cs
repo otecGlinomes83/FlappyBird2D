@@ -6,16 +6,16 @@ namespace Assets.Scripts.Spawners
 {
     public abstract class GenericSpawner<T> : MonoBehaviour where T : Component
     {
-        [SerializeField] protected int _maxSpawns;
+        [SerializeField] protected int MaxSpawns;
 
-        [SerializeField] protected T _prefab;
+        [SerializeField] protected T Prefab;
 
-        protected ObjectPool<T> _pool;
-        protected List<T> _objects = new List<T>();
+        protected ObjectPool<T> Pool;
+        protected List<T> Objects = new List<T>();
 
         protected void Awake()
         {
-            _pool = new ObjectPool<T>
+            Pool = new ObjectPool<T>
                 (
                 createFunc: () => OnCreate(),
                 actionOnGet: (obj) => OnGet(obj),
@@ -27,8 +27,8 @@ namespace Assets.Scripts.Spawners
         {
             DestroyAll();
 
-            _pool.Clear();
-            _objects.Clear();
+            Pool.Clear();
+            Objects.Clear();
         }
 
         protected virtual void OnGet(T obj)
@@ -36,10 +36,10 @@ namespace Assets.Scripts.Spawners
             obj.gameObject.SetActive(true);
         }
 
-        protected virtual T OnCreate()
+        protected T OnCreate()
         {
-            T obj = Instantiate(_prefab);
-            _objects.Add(obj);
+            T obj = Instantiate(Prefab);
+            Objects.Add(obj);
 
             return obj;
         }
@@ -49,12 +49,12 @@ namespace Assets.Scripts.Spawners
             obj.gameObject.SetActive(false);
         }
 
-        protected virtual void DestroyAll()
+        protected void DestroyAll()
         {
-            if (_objects == null)
+            if (Objects == null)
                 return;
 
-            foreach (T obj in _objects)
+            foreach (T obj in Objects)
                 Destroy(obj.gameObject);
         }
     }

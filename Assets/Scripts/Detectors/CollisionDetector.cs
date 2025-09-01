@@ -1,15 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class CollisionDetector : MonoBehaviour
-    {
-        public event Action<Collision2D> Detected;
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            Detected?.Invoke(collision);
-        }
-    }
+    public class CollisionDetector : GenericDetector<Collider2D> { }
 }

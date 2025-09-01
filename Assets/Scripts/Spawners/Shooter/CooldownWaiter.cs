@@ -1,41 +1,39 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Interfaces;
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
-    [RequireComponent(typeof(Shooter))]
-    public class CooldownShooter : MonoBehaviour
+    [RequireComponent(typeof(EnemyShooter))]
+    public class CooldownWaiter : MonoBehaviour
     {
         [SerializeField] private float _attackRate;
 
-        private Shooter _shooter;
         private Coroutine _cooldownShootCoroutine;
         private WaitForSeconds _cooldown;
 
-        private void Awake()
-        {
-            _shooter = GetComponent<Shooter>();
-        }
+        public event Action ShootAble;
 
-        public void TryStartShoot()
+        public void TryStartWait()
         {
             if (_cooldownShootCoroutine != null)
-                TryStopShoot();
+                TryStopWait();
 
-            _cooldownShootCoroutine = StartCoroutine(CooldownShoot());
+            if (gameObject.activeInHierarchy)
+                _cooldownShootCoroutine = StartCoroutine(ShootCooldown());
         }
 
-        public void TryStopShoot()
+        public void TryStopWait()
         {
             if (_cooldownShootCoroutine == null)
                 return;
 
             StopCoroutine(_cooldownShootCoroutine);
             _cooldownShootCoroutine = null;
-            _shooter.Reset();
         }
 
-        private IEnumerator CooldownShoot()
+        private IEnumerator ShootCooldown()
         {
             _cooldown = new WaitForSeconds(_attackRate);
 
@@ -43,7 +41,7 @@ namespace Assets.Scripts
             {
                 yield return _cooldown;
 
-                _shooter.Shoot();
+                ShootAble?.Invoke();
             }
         }
     }

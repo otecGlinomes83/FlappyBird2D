@@ -11,27 +11,29 @@ namespace Assets.Scripts.Enemy
         [SerializeField] private int _maxEnemyCount = 3;
 
         [SerializeField] private Game _game;
-        [SerializeField] private Bird _bird;
         [SerializeField] private Enemy _enemyPrefab;
         [SerializeField] private BoxCollider2D _spawnZone;
+        [SerializeField] private EnemyDetector _enemyDetector;
 
         private Coroutine _spawnCoroutine;
 
         private void OnEnable()
         {
+            _enemyDetector.Detected += Pool.Release;
             _game.Started += StartSpawn;
             _game.Finished += Reset;
         }
 
         private void OnDisable()
         {
+            _enemyDetector.Detected -= Pool.Release;
             _game.Started -= StartSpawn;
             _game.Finished -= Reset;
         }
 
         private void StartSpawn()
         {
-            _spawnCoroutine = StartCoroutine(CooldownSpawn());
+            _spawnCoroutine = StartCoroutine(SpawnPerCooldown());
         }
 
         public override void Reset()
@@ -44,25 +46,24 @@ namespace Assets.Scripts.Enemy
         {
             base.OnGet(enemy);
 
-            enemy.ReadyForRelease += _pool.Release;
-
             enemy.transform.position = new Vector2
-                (
-                _spawnZone.transform.position.x,
-                Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
-                );
+    (
+    _spawnZone.transform.position.x,
+    Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
+    );
 
-            enemy.Initialize(_bird.transform);
+            enemy.ReadyForRelease += Pool.Release;
         }
 
         protected override void OnRelease(Enemy enemy)
         {
+            enemy.Reset();
             base.OnRelease(enemy);
 
-            enemy.ReadyForRelease -= _pool.Release;
+            enemy.ReadyForRelease -= Pool.Release;
         }
 
-        IEnumerator CooldownSpawn()
+      private  IEnumerator SpawnPerCooldown()
         {
             WaitForSeconds cooldown = new WaitForSeconds(_spawnRate);
 
@@ -70,8 +71,8 @@ namespace Assets.Scripts.Enemy
             {
                 yield return cooldown;
 
-                if (_pool.CountActive < _maxEnemyCount)
-                    _pool.Get();
+                if (Pool.CountActive < _maxEnemyCount)
+                    Pool.Get();
             }
         }
     }

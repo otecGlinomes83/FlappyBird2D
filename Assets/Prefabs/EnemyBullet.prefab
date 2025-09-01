@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -100,12 +100,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6996062592122210145}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f4186a8df9c5804b83415e1f7334cdc, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c8f61a9a07c6d843bebcf1cd1e2dd25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
-  _speed: -10
-  _lifeTime: 4
+  Damage: 1
+  Speed: -15
+  LifeTime: 3
 --- !u!61 &3280565945000997290
 BoxCollider2D:
   m_ObjectHideFlags: 0
