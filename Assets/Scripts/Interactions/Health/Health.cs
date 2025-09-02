@@ -1,31 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Interactions.Health
-{
-    public class GenericHealth<T> : MonoBehaviour, IDamageAbler where T : ResetAble
+    public class Health : MonoBehaviour
     {
-        [SerializeField] private T _resetAble;
-
         [SerializeField] private int _maxHealth;
 
-        public event Action Dead;
-
         private int _currentHealth;
+
+        public event Action Dead;
 
         private void Start()
         {
             _currentHealth = _maxHealth;
-        }
-
-        private void OnEnable()
-        {
-            _resetAble.ResetCompleted += Reset;
-        }
-
-        private void OnDisable()
-        {
-            _resetAble.ResetCompleted -= Reset;
         }
 
         public void Reset()
@@ -41,4 +27,3 @@ namespace Assets.Scripts.Interactions.Health
                 Dead?.Invoke();
         }
     }
-}

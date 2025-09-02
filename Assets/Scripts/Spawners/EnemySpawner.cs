@@ -1,82 +1,93 @@
-﻿using Assets.Scripts.Spawners;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemy
+public class EnemySpawner : GenericSpawner<Enemy>
 {
-    public class EnemySpawner : GenericSpawner<Enemy>
+    [SerializeField] private float _spawnRate;
+
+    [SerializeField] private int _maxEnemyCount = 3;
+
+    [SerializeField] private Enemy _enemyPrefab;
+    [SerializeField] private BoxCollider2D _spawnZone;
+    [SerializeField] private EnemyDetector _enemyDetector;
+
+    private Coroutine _spawnCoroutine;
+
+    private void OnEnable()
     {
-        [SerializeField] private float _spawnRate;
+        _enemyDetector.Detected += Pool.Release;
+    }
 
-        [SerializeField] private int _maxEnemyCount = 3;
+    private void OnDisable()
+    {
+        _enemyDetector.Detected -= Pool.Release;
+    }
 
-        [SerializeField] private Enemy _enemyPrefab;
-        [SerializeField] private BoxCollider2D _spawnZone;
-        [SerializeField] private EnemyDetector _enemyDetector;
+    public void TryStartSpawn()
+    {
+        if (_spawnCoroutine != null)
+            return;
 
-        private Coroutine _spawnCoroutine;
+        _spawnCoroutine = StartCoroutine(SpawnPerCooldown());
+    }
 
-        private void OnEnable()
+    public void TryStopSpawn()
+    {
+        if (_spawnCoroutine == null)
+            return;
+
+        StopCoroutine(_spawnCoroutine);
+        _spawnCoroutine = null;
+
+        Reset();
+    }
+
+    protected override void DestroyAll()
+    {
+        if (Objects == null)
+            return;
+
+        foreach (Enemy enemy in Objects)
         {
-            _enemyDetector.Detected += Pool.Release;
-        }
-
-        private void OnDisable()
-        {
-            _enemyDetector.Detected -= Pool.Release;
-        }
-
-        public void TryStartSpawn()
-        {
-            if (_spawnCoroutine != null)
-                return;
-
-            _spawnCoroutine = StartCoroutine(SpawnPerCooldown());
-        }
-
-        public void TryStopSpawn()
-        {
-            if (_spawnCoroutine == null)
-                return;
-
-            StopCoroutine(_spawnCoroutine);
-
-            Reset();
-            _spawnCoroutine = null;
-        }
-
-        protected override void OnGet(Enemy enemy)
-        {
-            base.OnGet(enemy);
-
-            enemy.transform.position = new Vector2
-    (
-    _spawnZone.transform.position.x,
-    Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
-    );
-
-            enemy.ReadyForRelease += Pool.Release;
-        }
-
-        protected override void OnRelease(Enemy enemy)
-        {
-            enemy.Reset();
-            base.OnRelease(enemy);
-
-            enemy.ReadyForRelease -= Pool.Release;
-        }
-
-        private IEnumerator SpawnPerCooldown()
-        {
-            WaitForSeconds cooldown = new WaitForSeconds(_spawnRate);
-
-            while (enabled)
+            if (enemy != null)
             {
-                yield return cooldown;
-
-                if (Pool.CountActive < _maxEnemyCount)
-                    Pool.Get();
+                enemy.Reset();
+                Destroy(enemy.gameObject);
             }
+        }
+    }
+
+    protected override void OnGet(Enemy enemy)
+    {
+        base.OnGet(enemy);
+
+        enemy.transform.position = new Vector2
+(
+_spawnZone.transform.position.x,
+Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
+);
+
+        enemy.ReadyForRelease += Pool.Release;
+    }
+
+    protected override void OnRelease(Enemy enemy)
+    {
+        enemy.Reset();
+        base.OnRelease(enemy);
+
+        enemy.ReadyForRelease -= Pool.Release;
+    }
+
+    private IEnumerator SpawnPerCooldown()
+    {
+        WaitForSeconds cooldown = new WaitForSeconds(_spawnRate);
+
+        while (enabled)
+        {
+            yield return cooldown;
+
+            if (Pool.CountActive < _maxEnemyCount)
+                Pool.Get();
         }
     }
 }

@@ -2,46 +2,42 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts
+public class CooldownWaiter : MonoBehaviour
 {
-    [RequireComponent(typeof(EnemyShooter))]
-    public class CooldownWaiter : MonoBehaviour
+    [SerializeField] private float _attackRate;
+
+    private Coroutine _cooldownShootCoroutine;
+    private WaitForSeconds _cooldown;
+
+    public event Action ShootAble;
+
+    public void TryStartWait()
     {
-        [SerializeField] private float _attackRate;
+        if (_cooldownShootCoroutine != null)
+            TryStopWait();
 
-        private Coroutine _cooldownShootCoroutine;
-        private WaitForSeconds _cooldown;
+        if (gameObject.activeInHierarchy)
+            _cooldownShootCoroutine = StartCoroutine(ShootCooldown());
+    }
 
-        public event Action ShootAble;
+    public void TryStopWait()
+    {
+        if (_cooldownShootCoroutine == null)
+            return;
 
-        public void TryStartWait()
+        StopCoroutine(_cooldownShootCoroutine);
+        _cooldownShootCoroutine = null;
+    }
+
+    private IEnumerator ShootCooldown()
+    {
+        _cooldown = new WaitForSeconds(_attackRate);
+
+        while (enabled)
         {
-            if (_cooldownShootCoroutine != null)
-                TryStopWait();
+            yield return _cooldown;
 
-            if (gameObject.activeInHierarchy)
-                _cooldownShootCoroutine = StartCoroutine(ShootCooldown());
-        }
-
-        public void TryStopWait()
-        {
-            if (_cooldownShootCoroutine == null)
-                return;
-
-            StopCoroutine(_cooldownShootCoroutine);
-            _cooldownShootCoroutine = null;
-        }
-
-        private IEnumerator ShootCooldown()
-        {
-            _cooldown = new WaitForSeconds(_attackRate);
-
-            while (enabled)
-            {
-                yield return _cooldown;
-
-                ShootAble?.Invoke();
-            }
+            ShootAble?.Invoke();
         }
     }
 }

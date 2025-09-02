@@ -1,15 +1,14 @@
-using Assets.Scripts;
 using System;
 using System.Collections;
 using UnityEngine;
 
-public abstract class GenericBullet<T> : MonoBehaviour where T: IDamageAbler
+public class Bullet : MonoBehaviour
 {
-    [SerializeField] protected int Damage;
-    [SerializeField] protected float Speed;
-    [SerializeField] protected float LifeTime = 1f;
+    [SerializeField] private int Damage;
+    [SerializeField] private float Speed;
+    [SerializeField] private float LifeTime = 1f;
 
-    public event Action<GenericBullet<T>> ReadyForRelease;
+    public event Action<Bullet> ReadyForRelease;
 
     private CollisionDetector _detector;
 
@@ -17,17 +16,17 @@ public abstract class GenericBullet<T> : MonoBehaviour where T: IDamageAbler
 
     private bool _isActive;
 
-    protected virtual void Awake()
+    private void Awake()
     {
         _detector = GetComponent<CollisionDetector>();
     }
 
-    protected virtual void OnEnable()
+    private void OnEnable()
     {
         _detector.Detected += TryAttack;
     }
 
-    protected virtual void OnDisable()
+    private void OnDisable()
     {
         _detector.Detected -= TryAttack;
     }
@@ -41,19 +40,19 @@ public abstract class GenericBullet<T> : MonoBehaviour where T: IDamageAbler
         StartCoroutine(Move());
     }
 
-    protected void ReleaseBullet() =>
+    private void ReleaseBullet() =>
         ReadyForRelease?.Invoke(this);
 
-    protected void TryAttack(Collider2D collider2D)
+    private void TryAttack(Collider2D collider2D)
     {
-        if (collider2D.gameObject.TryGetComponent(out T health))
+        if (collider2D.gameObject.TryGetComponent(out Health health))
             health.TakeDamage(Damage);
 
         StopAllCoroutines();
         ReleaseBullet();
     }
 
-    protected IEnumerator Move()
+    private IEnumerator Move()
     {
         StartCoroutine(WaitLifeTime());
 
@@ -66,7 +65,7 @@ public abstract class GenericBullet<T> : MonoBehaviour where T: IDamageAbler
         ReadyForRelease?.Invoke(this);
     }
 
-    protected IEnumerator WaitLifeTime()
+    private IEnumerator WaitLifeTime()
     {
         yield return new WaitForSeconds(LifeTime);
 

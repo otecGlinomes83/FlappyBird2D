@@ -1,75 +1,77 @@
-using Assets.Scripts;
 using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
-[RequireComponent(typeof(PlayerHealth))]
-public class Player : MonoBehaviour, IShootAble, ResetAble
+[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Shooter))]
+public class Player : MonoBehaviour
 {
     [SerializeField] private CollisionDetector _collisionDetector;
 
-    private PlayerHealth _health;
+    private Health _health;
+    private Mover _mover;
+    private Shooter _shooter;
     private PlayerInput _playerInput;
 
     private bool _isDead = false;
 
-    public event Action GameOver;
-    public event Action FlyTriggered;
-    public event Action ShootTriggered;
-    public event Action ResetCompleted;
+    public event Action Dead;
 
     private void Awake()
     {
-        _health = GetComponent<PlayerHealth>();
+        _health = GetComponent<Health>();
+        _mover = GetComponent<Mover>();
+        _shooter = GetComponent<Shooter>();
+
         _playerInput = new PlayerInput();
     }
 
     private void OnEnable()
     {
-        _health.Dead += Dead;
+        _health.Dead += HandleDead;
         _collisionDetector.Detected += HandleCollision;
+        _playerInput.Bird.Fly.performed += OnFly;
+        _playerInput.Bird.Shoot.performed += OnShoot;
     }
 
     private void OnDisable()
     {
-        _health.Dead -= Dead;
+        _health.Dead -= HandleDead;
         _collisionDetector.Detected -= HandleCollision;
-    }
-
-    private void Update()
-    {
-        if (_playerInput.Bird.Fly.triggered)
-        {
-            FlyTriggered?.Invoke();
-        }
-
-        if (_playerInput.Bird.Shoot.triggered)
-        {
-            ShootTriggered?.Invoke();
-        }
     }
 
     public void Reset()
     {
-        ResetCompleted?.Invoke();
+        _mover.Reset();
+        _shooter.Reset();
 
         _playerInput.Enable();
 
         _isDead = false;
     }
 
-    private void HandleCollision(Collider2D collider)
+    private void OnShoot(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        Dead();
+        _shooter.Shoot();
     }
 
-    private void Dead()
+    private void OnFly(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        _mover.Fly();
+    }
+
+    private void HandleCollision(Collider2D collider)
+    {
+        HandleDead();
+    }
+
+    private void HandleDead()
     {
         if (_isDead)
             return;
 
         _isDead = true;
-        GameOver?.Invoke();
+        Dead?.Invoke();
         _playerInput.Disable();
     }
 }

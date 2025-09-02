@@ -1,15 +1,14 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Enemy
-{
-    [RequireComponent(typeof(EnemyHealth))]
+    [RequireComponent(typeof(Health))]
     [RequireComponent(typeof(CooldownWaiter))]
-    [RequireComponent(typeof(EnemyShooter))]
-    public class Enemy : MonoBehaviour, ResetAble, IShootAble
+    [RequireComponent(typeof(Shooter))]
+    public class Enemy : MonoBehaviour
     {
-        private EnemyHealth _health;
+        private Health _health;
         private CooldownWaiter _cooldownWaiter;
+        private Shooter _shooter;
 
         private Quaternion _lookLeft = Quaternion.Euler(0, 180, 0);
 
@@ -17,12 +16,10 @@ namespace Assets.Scripts.Enemy
 
         public event Action<Enemy> ReadyForRelease;
 
-        public event Action ResetCompleted;
-        public event Action ShootTriggered;
-
         private void Awake()
         {
-            _health = GetComponent<EnemyHealth>();
+            _shooter = GetComponent<Shooter>();
+            _health = GetComponent<Health>();
             _cooldownWaiter = GetComponent<CooldownWaiter>();
         }
 
@@ -34,7 +31,7 @@ namespace Assets.Scripts.Enemy
         private void OnEnable()
         {
             _health.Dead += HandleDead;
-            _cooldownWaiter.ShootAble += Shoot;
+            _cooldownWaiter.ShootAble += _shooter.Shoot;
 
             _cooldownWaiter.TryStartWait();
         }
@@ -42,19 +39,16 @@ namespace Assets.Scripts.Enemy
         private void OnDisable()
         {
             _health.Dead -= HandleDead;
-            _cooldownWaiter.ShootAble -= Shoot;
+            _cooldownWaiter.ShootAble -= _shooter.Shoot;
         }
 
         public void Reset()
         {
             _dead = false;
             _cooldownWaiter.TryStopWait();
-            ResetCompleted?.Invoke();
-        }
 
-        private void Shoot()
-        {
-            ShootTriggered?.Invoke();
+            _health.Reset();
+            _shooter.Reset();
         }
 
         private void HandleDead()
@@ -67,4 +61,3 @@ namespace Assets.Scripts.Enemy
             ReadyForRelease?.Invoke(this);
         }
     }
-}

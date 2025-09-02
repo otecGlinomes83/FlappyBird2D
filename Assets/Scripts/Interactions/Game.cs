@@ -1,6 +1,4 @@
-﻿using Assets.Scripts.Enemy;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Game : MonoBehaviour
 {
@@ -13,14 +11,14 @@ public class Game : MonoBehaviour
     {
         _startScreen.PlayButtonClicked += OnPlayButtonClick;
         _endGameScreen.RestartButtonClicked += OnRestartButtonClick;
-        _bird.GameOver += EndGame;
+        _bird.Dead += EndGame;
     }
 
     private void OnDisable()
     {
         _startScreen.PlayButtonClicked -= OnPlayButtonClick;
         _endGameScreen.RestartButtonClicked -= OnRestartButtonClick;
-        _bird.GameOver -= EndGame;
+        _bird.Dead -= EndGame;
     }
 
     private void Start()
@@ -46,7 +44,7 @@ public class Game : MonoBehaviour
     {
         Time.timeScale = 0;
         _endGameScreen.Open();
-        _enemySpawner.Reset();
+        _enemySpawner.TryStopSpawn();
     }
 
     private void StartGame()

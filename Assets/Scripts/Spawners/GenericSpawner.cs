@@ -2,12 +2,8 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Assets.Scripts.Spawners
-{
     public abstract class GenericSpawner<T> : MonoBehaviour where T : Component
     {
-        [SerializeField] protected int MaxSpawns;
-
         [SerializeField] protected T Prefab;
 
         protected ObjectPool<T> Pool;
@@ -49,7 +45,7 @@ namespace Assets.Scripts.Spawners
             obj.gameObject.SetActive(false);
         }
 
-        protected void DestroyAll()
+        protected virtual void DestroyAll()
         {
             if (Objects == null)
                 return;
@@ -61,4 +57,3 @@ namespace Assets.Scripts.Spawners
             }
         }
     }
-}

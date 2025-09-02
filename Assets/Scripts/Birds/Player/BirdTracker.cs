@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Player
-{
     public class BirdTracker : MonoBehaviour
     {
         [SerializeField] private Transform _target;
@@ -15,4 +13,3 @@ namespace Assets.Scripts.Player
             transform.position = position;
         }
     }
-}

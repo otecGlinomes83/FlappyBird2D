@@ -196,7 +196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2b80046e418d7644aaf9ab4fb5d88f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpawns: 3
   Prefab: {fileID: 1985385106042853168, guid: 01f8f99ae028b0749a5ae855fcc252fd, type: 3}
   _spawnRate: 5
   _maxEnemyCount: 4
@@ -689,11 +688,12 @@ GameObject:
   - component: {fileID: 411595609}
   - component: {fileID: 411595608}
   - component: {fileID: 411595607}
-  - component: {fileID: 411595606}
-  - component: {fileID: 411595610}
   - component: {fileID: 411595611}
   - component: {fileID: 411595613}
   - component: {fileID: 411595612}
+  - component: {fileID: 411595616}
+  - component: {fileID: 411595615}
+  - component: {fileID: 411595614}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -701,22 +701,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &411595606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 411595604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fecff387c6bf0b4394a41f831ba2a53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxSpawns: 3
-  Prefab: {fileID: 3262859826233579518, guid: 73b225504a01408458509c4aac1fb140, type: 3}
-  _spawnPosition: {fileID: 1539021658}
-  _shootAble: {fileID: 411595611}
 --- !u!114 &411595607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,10 +715,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tapForce: 20
   _speed: 6
-  _rotationSpeed: 0.4
+  _rotationSpeed: 0.325
   _maxRotationZ: 45
   _minRotationZ: -25
-  _bird: {fileID: 411595611}
 --- !u!50 &411595608
 Rigidbody2D:
   serializedVersion: 5
@@ -778,20 +761,6 @@ Transform:
   - {fileID: 1951366811}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &411595610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 411595604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbdadff89b189594780c5477c38f5a4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _resetAble: {fileID: 411595611}
-  _maxHealth: 1
 --- !u!114 &411595611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -849,7 +818,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 11, y: 8}
+  m_Size: {x: 10, y: 6}
   m_EdgeRadius: 0
 --- !u!114 &411595613
 MonoBehaviour:
@@ -863,6 +832,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd47042a650bc964688bc17caf5ed4c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &411595614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411595604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3633ca44e9716d4ba65f46f8dc6cfe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 3262859826233579518, guid: 73b225504a01408458509c4aac1fb140, type: 3}
+--- !u!114 &411595615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411595604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f125cdc3aa90740b39bbaf1b51e0af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxShoots: 3
+  _spawnPosition: {fileID: 1539021658}
+--- !u!114 &411595616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411595604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cae08048fc1c7b43b047e0e1a69536b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 1
 --- !u!1 &460303798
 GameObject:
   m_ObjectHideFlags: 0
