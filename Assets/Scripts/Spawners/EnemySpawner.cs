@@ -67,7 +67,7 @@ _spawnZone.transform.position.x,
 Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
 );
 
-        enemy.ReadyForRelease += Pool.Release;
+        enemy.Dead += Pool.Release;
     }
 
     protected override void OnRelease(Enemy enemy)
@@ -75,7 +75,7 @@ Random.Range(_spawnZone.bounds.min.y, _spawnZone.bounds.max.y)
         enemy.Reset();
         base.OnRelease(enemy);
 
-        enemy.ReadyForRelease -= Pool.Release;
+        enemy.Dead -= Pool.Release;
     }
 
     private IEnumerator SpawnPerCooldown()

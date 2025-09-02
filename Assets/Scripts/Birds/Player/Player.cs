@@ -2,57 +2,49 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
-[RequireComponent(typeof(Health))]
-[RequireComponent(typeof(Shooter))]
-public class Player : MonoBehaviour
+public class Player : Bird
 {
     [SerializeField] private CollisionDetector _collisionDetector;
 
-    private Health _health;
     private Mover _mover;
-    private Shooter _shooter;
     private PlayerInput _playerInput;
-
-    private bool _isDead = false;
 
     public event Action Dead;
 
-    private void Awake()
+    protected override void Awake()
     {
-        _health = GetComponent<Health>();
+        base.Awake();
         _mover = GetComponent<Mover>();
-        _shooter = GetComponent<Shooter>();
-
         _playerInput = new PlayerInput();
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        _health.Dead += HandleDead;
+        base.OnEnable();
         _collisionDetector.Detected += HandleCollision;
         _playerInput.Bird.Fly.performed += OnFly;
         _playerInput.Bird.Shoot.performed += OnShoot;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        _health.Dead -= HandleDead;
+        base.OnDisable();
+
+        _playerInput.Bird.Fly.performed -= OnFly;
+        _playerInput.Bird.Shoot.performed -= OnShoot;
         _collisionDetector.Detected -= HandleCollision;
     }
 
-    public void Reset()
+    public override void Reset()
     {
+        base.Reset();
         _mover.Reset();
-        _shooter.Reset();
-
         _playerInput.Enable();
-
-        _isDead = false;
     }
 
     private void OnShoot(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        _shooter.Shoot();
+        Shooter.Shoot();
     }
 
     private void OnFly(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -63,15 +55,11 @@ public class Player : MonoBehaviour
     private void HandleCollision(Collider2D collider)
     {
         HandleDead();
+        Dead?.Invoke();
     }
 
-    private void HandleDead()
+    protected override void HandleDead()
     {
-        if (_isDead)
-            return;
-
-        _isDead = true;
-        Dead?.Invoke();
         _playerInput.Disable();
     }
 }
