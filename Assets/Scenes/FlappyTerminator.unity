@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bird: {fileID: 411595611}
+  _enemySpawner: {fileID: 302619068}
   _startScreen: {fileID: 1926827903}
   _endGameScreen: {fileID: 624564917}
 --- !u!4 &130245665
@@ -199,7 +200,6 @@ MonoBehaviour:
   Prefab: {fileID: 1985385106042853168, guid: 01f8f99ae028b0749a5ae855fcc252fd, type: 3}
   _spawnRate: 5
   _maxEnemyCount: 4
-  _game: {fileID: 130245664}
   _enemyPrefab: {fileID: 1985385106042853168, guid: 01f8f99ae028b0749a5ae855fcc252fd, type: 3}
   _spawnZone: {fileID: 366688944}
   _enemyDetector: {fileID: 374031698}
@@ -731,7 +731,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tapForce: 20
   _speed: 6
-  _rotationSpeed: 0.5
+  _rotationSpeed: 0.4
   _maxRotationZ: 45
   _minRotationZ: -25
   _bird: {fileID: 411595611}

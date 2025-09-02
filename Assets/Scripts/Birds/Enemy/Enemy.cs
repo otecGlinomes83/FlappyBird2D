@@ -1,6 +1,4 @@
-﻿using Assets.Scripts.Interfaces;
-using Assets.Scripts.Player;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Enemy

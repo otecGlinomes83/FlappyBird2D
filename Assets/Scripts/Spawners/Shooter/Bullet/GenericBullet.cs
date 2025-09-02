@@ -3,13 +3,13 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public abstract class Bullet : MonoBehaviour
+public abstract class GenericBullet<T> : MonoBehaviour where T: IDamageAbler
 {
-    [SerializeField] protected float Damage;
+    [SerializeField] protected int Damage;
     [SerializeField] protected float Speed;
     [SerializeField] protected float LifeTime = 1f;
 
-    public event Action<Bullet> ReadyForRelease;
+    public event Action<GenericBullet<T>> ReadyForRelease;
 
     private CollisionDetector _detector;
 
@@ -44,7 +44,14 @@ public abstract class Bullet : MonoBehaviour
     protected void ReleaseBullet() =>
         ReadyForRelease?.Invoke(this);
 
-    protected abstract void TryAttack(Collider2D collider2D);
+    protected void TryAttack(Collider2D collider2D)
+    {
+        if (collider2D.gameObject.TryGetComponent(out T health))
+            health.TakeDamage(Damage);
+
+        StopAllCoroutines();
+        ReleaseBullet();
+    }
 
     protected IEnumerator Move()
     {

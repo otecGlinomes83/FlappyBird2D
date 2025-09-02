@@ -10,7 +10,6 @@ namespace Assets.Scripts.Enemy
 
         [SerializeField] private int _maxEnemyCount = 3;
 
-        [SerializeField] private Game _game;
         [SerializeField] private Enemy _enemyPrefab;
         [SerializeField] private BoxCollider2D _spawnZone;
         [SerializeField] private EnemyDetector _enemyDetector;
@@ -20,26 +19,30 @@ namespace Assets.Scripts.Enemy
         private void OnEnable()
         {
             _enemyDetector.Detected += Pool.Release;
-            _game.Started += StartSpawn;
-            _game.Finished += Reset;
         }
 
         private void OnDisable()
         {
             _enemyDetector.Detected -= Pool.Release;
-            _game.Started -= StartSpawn;
-            _game.Finished -= Reset;
         }
 
-        private void StartSpawn()
+        public void TryStartSpawn()
         {
+            if (_spawnCoroutine != null)
+                return;
+
             _spawnCoroutine = StartCoroutine(SpawnPerCooldown());
         }
 
-        public override void Reset()
+        public void TryStopSpawn()
         {
-            base.Reset();
+            if (_spawnCoroutine == null)
+                return;
+
             StopCoroutine(_spawnCoroutine);
+
+            Reset();
+            _spawnCoroutine = null;
         }
 
         protected override void OnGet(Enemy enemy)
@@ -63,7 +66,7 @@ namespace Assets.Scripts.Enemy
             enemy.ReadyForRelease -= Pool.Release;
         }
 
-      private  IEnumerator SpawnPerCooldown()
+        private IEnumerator SpawnPerCooldown()
         {
             WaitForSeconds cooldown = new WaitForSeconds(_spawnRate);
 

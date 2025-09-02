@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace Assets.Scripts.Enemy
+﻿namespace Assets.Scripts.Enemy
 {
     public class EnemyDetector : GenericDetector<Enemy> { }
 }

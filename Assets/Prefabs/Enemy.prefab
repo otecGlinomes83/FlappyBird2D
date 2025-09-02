@@ -172,8 +172,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxSpawns: 1
   Prefab: {fileID: 3262859826233579518, guid: 66304591a4008534da245368377e6abd, type: 3}
-  _spawnPosition: {fileID: 3307393554707090780}
-  _shootAble: {fileID: 1985385106042853168}
+  SpawnPosition: {fileID: 3307393554707090780}
+  ShootAble: {fileID: 1985385106042853168}
 --- !u!114 &9210297640238819011
 MonoBehaviour:
   m_ObjectHideFlags: 0

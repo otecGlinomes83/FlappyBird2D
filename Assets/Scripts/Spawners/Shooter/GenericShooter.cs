@@ -1,23 +1,24 @@
-﻿using Assets.Scripts.Interfaces;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Spawners.Shooter
 {
-    public class GenericShooter<T> : GenericSpawner<Bullet> where T : IShootAble, ResetAble
+    public class GenericShooter<TShootable, TBullet> : GenericSpawner<GenericBullet<TBullet>>
+        where TShootable : IShootAble, ResetAble
+        where TBullet : IDamageAbler
     {
-        [SerializeField] protected Transform _spawnPosition;
-        [SerializeField] protected T _shootAble;
+        [SerializeField] protected Transform SpawnPosition;
+        [SerializeField] protected TShootable ShootAble;
 
         protected void OnEnable()
         {
-            _shootAble.ShootTriggered += Shoot;
-            _shootAble.ResetCompleted += Reset;
+            ShootAble.ShootTriggered += Shoot;
+            ShootAble.ResetCompleted += Reset;
         }
 
         protected void OnDisable()
         {
-            _shootAble.ShootTriggered -= Shoot;
-            _shootAble.ResetCompleted -= Reset;
+            ShootAble.ShootTriggered -= Shoot;
+            ShootAble.ResetCompleted -= Reset;
             Reset();
         }
 
@@ -34,18 +35,18 @@ namespace Assets.Scripts.Spawners.Shooter
                 Pool.Get();
         }
 
-        protected override void OnRelease(Bullet bullet)
+        protected override void OnRelease(GenericBullet<TBullet> bullet)
         {
             base.OnRelease(bullet);
             bullet.ReadyForRelease -= Pool.Release;
         }
 
-        protected override void OnGet(Bullet bullet)
+        protected override void OnGet(GenericBullet<TBullet> bullet)
         {
             base.OnGet(bullet);
             bullet.ReadyForRelease += Pool.Release;
 
-            bullet.transform.position = _spawnPosition.transform.position;
+            bullet.transform.position = SpawnPosition.transform.position;
             bullet.Initialize(transform.right, transform.rotation);
         }
     }

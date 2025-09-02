@@ -23,7 +23,7 @@ namespace Assets.Scripts.Spawners
                 );
         }
 
-        public virtual void Reset()
+        public void Reset()
         {
             DestroyAll();
 
@@ -55,7 +55,10 @@ namespace Assets.Scripts.Spawners
                 return;
 
             foreach (T obj in Objects)
-                Destroy(obj.gameObject);
+            {
+                if (obj != null)
+                    Destroy(obj.gameObject);
+            }
         }
     }
 }

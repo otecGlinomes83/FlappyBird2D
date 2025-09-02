@@ -1,5 +1,3 @@
-﻿using Assets.Scripts.Interfaces;
-using Assets.Scripts.Spawners.Shooter;
-using UnityEngine;
+﻿using Assets.Scripts.Spawners.Shooter;
 
-public class PlayerShooter : GenericShooter<Player> { }
+public class PlayerShooter : GenericShooter<Player,EnemyHealth> { }

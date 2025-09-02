@@ -1,19 +1,17 @@
-﻿using Assets.Scripts.Interfaces;
-using System;
-using System.Collections;
+﻿using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Interactions.Health
 {
-    public class GenericHealth<T> : MonoBehaviour where T : ResetAble
+    public class GenericHealth<T> : MonoBehaviour, IDamageAbler where T : ResetAble
     {
         [SerializeField] private T _resetAble;
 
-        [SerializeField] private float _maxHealth;
+        [SerializeField] private int _maxHealth;
 
         public event Action Dead;
 
-        private float _currentHealth;
+        private int _currentHealth;
 
         private void Start()
         {
@@ -35,9 +33,9 @@ namespace Assets.Scripts.Interactions.Health
             _currentHealth = _maxHealth;
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(int damage)
         {
-            _currentHealth = Mathf.Max(_currentHealth - Mathf.Max(damage, 0f), 0f);
+            _currentHealth = Mathf.Max(_currentHealth - Mathf.Max(damage, 0), 0);
 
             if (_currentHealth <= 0)
                 Dead?.Invoke();
